@@ -7,9 +7,23 @@
     <style>
         :root {
             --primary-pink: #ffb7b2;
-            --dark-pink: #ff85a1;
-            --bg-color: #fff0f3;
+            --dark-pink: #ff477e;
+            --soft-pink: #ff85a1;
+            --container-bg: rgba(255, 255, 255, 0.92);
+            --card-bg: #ffffff;
             --text-color: #4a4a4a;
+            --border-color: #ffe3e8;
+            --bg-gradient: linear-gradient(135deg, #fff0f3 0%, #ffe5ec 50%, #ffcad4 100%);
+        }
+
+        /* Ночная тема (включается автоматически) */
+        body.night-mode {
+            --bg-gradient: linear-gradient(135deg, #1a0b2e 0%, #311445 50%, #5c134f 100%);
+            --container-bg: rgba(35, 15, 55, 0.88);
+            --card-bg: #2d1742;
+            --text-color: #f7e6ff;
+            --border-color: #5c2c77;
+            --soft-pink: #b85cb8;
         }
 
         * {
@@ -20,15 +34,16 @@
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
+            background: var(--bg-gradient);
+            background-attachment: fixed;
             color: var(--text-color);
             overflow-x: hidden;
             text-align: center;
-            padding: 20px;
+            padding: 40px 20px;
             position: relative;
+            transition: background 1.5s ease;
         }
 
-        /* Конфетти холст на весь экран */
         #confetti-canvas {
             position: fixed;
             top: 0;
@@ -40,54 +55,90 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(5px);
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(255, 133, 161, 0.2);
-            border: 2px solid #ffe3e8;
+            background: var(--container-bg);
+            backdrop-filter: blur(10px);
+            padding: 40px 30px;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(255, 71, 126, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.3);
             position: relative;
             z-index: 10;
+            transition: all 0.5s ease;
         }
 
         h1 {
-            color: #ff477e;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
-            animation: heartbeat 1.5s infinite ease-in-out;
+            color: var(--dark-pink);
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(255, 71, 126, 0.2);
+            animation: heartbeat 1.6s infinite ease-in-out;
+            font-weight: 800;
         }
 
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.04); }
+            50% { transform: scale(1.03); }
         }
 
-        /* Декоративные цветы вокруг */
         .flower-decor {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            letter-spacing: 5px;
+        }
+
+        /* Музыкальный плеер */
+        .music-player {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1000;
+        }
+
+        .music-btn {
+            background: var(--dark-pink);
+            color: white;
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50px;
             font-size: 1.5rem;
-            margin: 10px 0;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 71, 126, 0.4);
+            transition: all 0.3s;
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 10px;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .music-btn.playing {
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* Таймер */
         .timer-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 20px;
-            border: 2px dashed var(--dark-pink);
-            margin: 25px 0;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 25px;
+            border: 2px dashed var(--soft-pink);
+            margin: 30px 0;
         }
 
         .timer-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: var(--dark-pink);
             font-weight: bold;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .timer-display {
@@ -98,221 +149,481 @@
         }
 
         .time-box {
-            background: #ffe5ec;
-            padding: 10px 15px;
-            border-radius: 12px;
-            min-width: 85px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            background: var(--container-bg);
+            padding: 15px;
+            border-radius: 18px;
+            min-width: 95px;
+            border: 1px solid var(--border-color);
         }
 
         .time-num {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: bold;
-            color: #ff477e;
+            color: var(--dark-pink);
         }
 
-        .time-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: #a37081;
-            margin-top: 2px;
+        /* Интерактивная кнопка соскучилась */
+        .miss-you-section {
+            margin: 35px 0;
         }
 
-        /* Галерея котиков и цветов */
+        .heart-btn {
+            background: var(--dark-pink);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 71, 126, 0.3);
+            transition: all 0.3s;
+        }
+
+        .heart-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 25px rgba(255, 71, 126, 0.4);
+        }
+
+        .popup-message {
+            margin-top: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-pink);
+            min-height: 35px;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Мини-игра */
+        .game-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 25px;
+            margin: 35px 0;
+            position: relative;
+        }
+
+        .game-area {
+            width: 100%;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            border: 1px dashed var(--soft-pink);
+            margin-top: 15px;
+        }
+
+        .game-heart {
+            position: absolute;
+            font-size: 2rem;
+            cursor: pointer;
+            user-select: none;
+            animation: floatUp 1.5s ease-out forwards;
+        }
+
+        /* Цитаты */
+        .quotes-section {
+            margin: 40px 0;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 25px;
+            border-left: 5px solid var(--dark-pink);
+            text-align: left;
+        }
+
+        .quotes-section h2 {
+            color: var(--dark-pink);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quote-item {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .quote-text {
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .quote-author {
+            font-size: 0.9rem;
+            color: var(--soft-pink);
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* Галерея */
+        .gallery-title {
+            color: var(--dark-pink);
+            font-size: 1.6rem;
+            margin: 40px 0 20px 0;
+            font-weight: bold;
+        }
+
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
         }
 
         .card {
-            background: white;
-            padding: 12px;
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #ffe3e8;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--border-color);
         }
 
         .card:hover {
-            transform: translateY(-5px) rotate(1.5deg);
-            box-shadow: 0 12px 25px rgba(255, 133, 161, 0.15);
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 0 20px 35px rgba(255, 71, 126, 0.15);
         }
 
         .card img {
             width: 100%;
-            height: 200px;
+            height: 230px;
             object-fit: cover;
-            border-radius: 15px;
+            border-radius: 18px;
         }
 
         .card p {
-            margin-top: 10px;
-            font-size: 0.95rem;
+            margin-top: 15px;
+            font-size: 1rem;
             font-style: italic;
-            color: #555;
-            line-height: 1.4;
+        }
+
+        /* Секретная секция */
+        .secret-section {
+            margin-top: 50px;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 25px;
+            border: 2px solid var(--dark-pink);
+        }
+
+        .secret-input {
+            padding: 10px 15px;
+            border-radius: 15px;
+            border: 2px solid var(--soft-pink);
+            outline: none;
+            font-size: 1rem;
+            text-align: center;
+            margin-right: 10px;
+            width: 120px;
+        }
+
+        .secret-btn {
+            padding: 10px 20px;
+            background: var(--dark-pink);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .secret-content {
+            display: none;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            animation: popIn 0.5s ease forwards;
+            text-align: left;
+            padding: 15px;
+            background: rgba(255, 71, 126, 0.05);
+            border-radius: 15px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Слой для бесконечного салюта-конфетти -->
     <canvas id="confetti-canvas"></canvas>
 
+   <div class="music-player">
+    <button class="music-btn" id="music-toggle" onclick="toggleMusic()">🔇</button>
+    <audio id="bg-audio" preload="none">
+        <!-- Это прямая ссылка на аудиопоток (интернет-радио) -->
+        <source src="https://stream.zeno.fm/f3wvbbqmdg8uv" type="audio/mpeg">
+    </audio>
+</div>
+
     <div class="container">
-        <!-- Главное признание -->
         <h1>ты самая лучшая девочка на свете &lt;3</h1>
+        <div class="flower-decor" id="sun-moon-icon">🌸✨🎀✨🌷✨🎀✨🌸</div>
         
-        <div class="flower-decor">🌸✨🌸✨🌸✨🌸</div>
-        
-        <!-- Блок таймера -->
+        <!-- Таймер -->
         <div class="timer-container">
-            <div class="timer-title">💕 Время нашей любви: 💕</div>
+            <div class="timer-title">❤️ Время нашей невероятной истории: ❤️</div>
             <div class="timer-display" id="timer">
-                <div class="time-box"><div class="time-num" id="days">0</div><div class="time-label">Дней</div></div>
-                <div class="time-box"><div class="time-num" id="hours">0</div><div class="time-label">Часов</div></div>
-                <div class="time-box"><div class="time-num" id="minutes">0</div><div class="time-label">Минут</div></div>
-                <div class="time-box"><div class="time-num" id="seconds">0</div><div class="time-label">Секунд</div></div>
+                <div class="time-box"><div class="time-num" id="days">0</div><div>Дней</div></div>
+                <div class="time-box"><div class="time-num" id="hours">0</div><div>Часов</div></div>
+                <div class="time-box"><div class="time-num" id="minutes">0</div><div>Минут</div></div>
+                <div class="time-box"><div class="time-num" id="seconds">0</div><div>Секунд</div></div>
             </div>
         </div>
 
-        <!-- Галерея с милыми котиками и цветами -->
+        <!-- Кнопка соскучилась -->
+        <div class="miss-you-section">
+            <button class="heart-btn" onclick="showLoveMessage(event)">Нажми, когда соскучишься по мне 💖</button>
+            <div class="popup-message" id="love-message"></div>
+        </div>
+
+        <!-- Игра собери сердечки -->
+        <div class="game-section">
+            <h3>🎮 Лови сердечки нашей любви! Собрано: <span id="score-val" style="color:var(--dark-pink); font-weight:bold;">0</span></h3>
+            <div class="game-area" id="game-zone" onclick="spawnHeartManual(event)">
+                <div style="position:absolute; top:45%; width:100%; text-align:center; opacity:0.4; font-size:0.9rem;">(Сердечки взлетают сами, или кликай по зоне, чтобы создавать их!)</div>
+            </div>
+        </div>
+
+        <!-- Цитаты -->
+        <div class="quotes-section">
+            <h2>📖 Строки о любви, которые напоминают мне о тебе:</h2>
+            <div class="quote-item">
+                <div class="quote-text">«Любовь — это когда хочешь переживать с кем-то все четыре времени года. Когда хочешь бежать с кем-то от весенней грозы под усыпанную цветами сирень...»</div>
+                <div class="quote-author">— Януш Леон Вишневский</div>
+            </div>
+            <div class="quote-item">
+                <div class="quote-text">«Если ты будешь помнить меня, то мне всё равно, если все остальные забудут.»</div>
+                <div class="quote-author">— Харуки Мураками</div>
+            </div>
+        </div>
+
+        <!-- Галерея -->
+        <div class="gallery-title">🐾 Немного пушистой милоты для твоего настроения:</div>
         <div class="gallery">
-            <!-- Карточка 1 -->
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop" alt="Милый кот">
+                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop" alt="Cat">
                 <p>Ты вызываешь точно такую же улыбку и тепло внутри! 🐾</p>
             </div>
-            <!-- Карточка 2 -->
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80&w=500&auto=format&fit=crop" alt="Кот мем">
-                <p>Смотрю на тебя и каждый раз влюбляюсь заново 🥰</p>
+                <img src="https://images.unsplash.com/photo-1618233449339-510b64d0fe2c?q=80&w=500&auto=format&fit=crop" alt="Capybara">
+                <p>Мы идеальная команда, прямо как эти милые капибары! 🧸</p>
             </div>
-            <!-- Карточка 3 -->
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?q=80&w=500&auto=format&fit=crop" alt="Красивые пионы">
-                <p>Самые нежные цветы в мире — только для тебя 💐</p>
+                <img src="https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80&w=500&auto=format&fit=crop" alt="Cute animal">
+                <p>Самой яркой, невероятной и любимой девочке! 😎❤️</p>
             </div>
-            <!-- Карточка 4 -->
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1573865526739-10659fec78a5?q=80&w=500&auto=format&fit=crop" alt="Кот лапочка">
-                <p>Муррр... Шлю тебе миллион самых крепких обнимашек! 🐱</p>
+        </div>
+
+        <!-- Секретный замок -->
+        <div class="secret-section" id="lock-zone">
+            <h3>🔒 Секретный сундучок</h3>
+            <p style="font-size:0.9rem; margin-bottom:15px; opacity:0.8;">Введи дату вашего начала отношений (4 цифры ДДММ), чтобы открыть:</p>
+            <input type="text" class="secret-input" id="code-input" placeholder="0000" maxlength="4">
+            <button class="secret-btn" onclick="checkSecretCode()">Открыть</button>
+            
+            <div class="secret-content" id="secret-text">
+                <strong>Моя любимая девочка! 🤍</strong><br><br>
+                Если ты читаешь это, значит секретный код подошел. Я просто хочу сказать, что ты — самое дорогое и прекрасное, что случилось в моей жизни. Этот сайт — лишь маленькое напоминание о том, как сильно я тебя люблю и ценю каждую секунду рядом. Спасибо тебе за твой смех, твою нежность и за то, что ты есть! Ты лучшая на свете! ✨
             </div>
         </div>
     </div>
 
     <script>
-        // --- СТРИМ-САЛЮТ ИЗ КОНФЕТТИ И СЕРДЕЧЕК ---
+        // --- ДИНАМИЧЕСКОЕ ВРЕМЯ СУТОК ---
+        function checkTimeOfDay() {
+            const hour = new Date().getHours();
+            const body = document.body;
+            const icon = document.getElementById('sun-moon-icon');
+            if (hour >= 19 || hour < 6) {
+                body.classList.add('night-mode');
+                icon.innerText = "🌌✨🌙✨🔮✨🌙✨🌌";
+            } else {
+                body.classList.remove('night-mode');
+                icon.innerText = "🌸✨🎀✨🌷✨🎀✨🌸";
+            }
+        }
+        checkTimeOfDay();
+
+        // --- ОБНОВЛЕННЫЙ МУЗЫКАЛЬНЫЙ ПЛЕЕР ---
+        function toggleMusic() {
+            const audio = document.getElementById('bg-audio');
+            const btn = document.getElementById('music-toggle');
+            
+            if (audio.paused) {
+                // Используем Promise для обработки запуска аудио
+                audio.play().then(() => {
+                    btn.classList.add('playing');
+                    btn.innerText = "🎵";
+                }).catch(e => {
+                    console.log("Браузер заблокировал воспроизведение: ", e);
+                    // Визуальный фидбэк, если автовоспроизведение заблокировано
+                    btn.innerText = "🔇";
+                });
+            } else {
+                audio.pause();
+                btn.classList.remove('playing');
+                btn.innerText = "🔇";
+            }
+        }
+
+        // --- КНОПКА «СОСКУЧИЛАСЬ» ---
+        const phrases = [
+            "Я тоже безумно по тебе скучаю! 🥰",
+            "Ты моё самое большое счастье! 💕",
+            "Обнимаю тебя крепко-крепко прямо сейчас! 🧸",
+            "Улыбнись, тебе это так идет! 😊",
+            "Посылаю тебе воздушный поцелуйчик! 💋",
+            "Ты лучшая девочка во всей вселенной! 🌍✨",
+            "Моё сердце всегда с тобой рядом 💓",
+            "Кто самая красивая? Ты! 😍",
+            "Спасибо, что ты у меня есть! 🌸",
+            "Попей чайку, отдохни и помни: я тебя люблю! ☕❤️"
+        ];
+        function showLoveMessage(e) {
+            const display = document.getElementById('love-message');
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            display.innerText = randomPhrase;
+            
+            // Взрыв конфетти в месте клика
+            for(let i=0; i<15; i++) {
+                pieces.push(new Confetti(e.clientX, e.clientY));
+            }
+        }
+
+        // --- МИНИ-ИГРА ---
+        let score = 0;
+        const gameZone = document.getElementById('game-zone');
+        
+        function spawnGameHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'game-heart';
+            heart.innerText = ['❤️','💖','💝','💘','💗'][Math.floor(Math.random()*5)];
+            heart.style.left = Math.random() * (gameZone.offsetWidth - 30) + 'px';
+            heart.style.top = '170px';
+            
+            heart.onclick = (e) => {
+                e.stopPropagation();
+                score++;
+                document.getElementById('score-val').innerText = score;
+                heart.remove();
+                // Маленький салют при поимке
+                for(let i=0; i<5; i++) pieces.push(new Confetti(e.clientX, e.clientY));
+            };
+            
+            gameZone.appendChild(heart);
+            setTimeout(() => { if(heart) heart.remove(); }, 2000);
+        }
+        setInterval(spawnGameHeart, 1200);
+
+        function spawnHeartManual(e) {
+            score++;
+            document.getElementById('score-val').innerText = score;
+            for(let i=0; i<4; i++) pieces.push(new Confetti(e.clientX, e.clientY));
+        }
+
+        // --- СЕКРЕТНЫЙ КОД ---
+        function checkSecretCode() {
+            const input = document.getElementById('code-input').value;
+            const content = document.getElementById('secret-text');
+            if(input === "1207") {
+                content.style.display = "block";
+                alert("Замочек открыт! ✨📜");
+            } else {
+                alert("Неа, попробуй еще раз! Подсказка: дата из таймера (День и Месяц) 😉");
+            }
+        }
+
+        // --- КОНФЕТТИ И ЗВЁЗДЫ ---
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let pieces = [];
-        const numberOfPieces = 80;
-        const colors = ['#ff85a1', '#ffb7b2', '#ffc6ff', '#e8aeff', '#ffffff', '#ff477e'];
+        const colors = ['#ff85a1', '#ffb7b2', '#ffc6ff', '#e8aeff', '#ffffff', '#ff477e', '#ffd0da', '#ffe5ec'];
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
         class Confetti {
-            constructor() {
-                this.init();
-                // Распределяем детали по высоте при первой загрузке
-                this.y = Math.random() * canvas.height; 
-            }
-
-            init() {
-                this.x = Math.random() * canvas.width;
-                this.y = -20;
+            constructor(customX, customY) {
+                this.x = customX || Math.random() * canvas.width;
+                this.y = customY || (customX ? customY : Math.random() * canvas.height - canvas.height);
                 this.rotation = Math.random() * 360;
-                this.size = Math.random() * 8 + 6;
+                this.size = Math.random() * 10 + 6;
                 this.color = colors[Math.floor(Math.random() * colors.length)];
-                this.speed = Math.random() * 2 + 1.5;
+                this.speed = customX ? (Math.random() * 3 - 1.5) : (Math.random() * 2 + 1.2);
+                this.ySpeed = customX ? (Math.random() * -3 - 1) : (Math.random() * 2 + 1.2);
                 this.rotationSpeed = Math.random() * 2 - 1;
-                this.oscillationSpeed = Math.random() * 0.03 + 0.01;
                 this.time = Math.random() * 100;
             }
-
             update() {
-                this.y += this.speed;
+                if(this.ySpeed < 2 && this.ySpeed !== this.speed) this.ySpeed += 0.1; // Гравитация для кликов
+                this.y += this.ySpeed;
+                this.x += this.speed + Math.sin(this.time)*0.2;
                 this.rotation += this.rotationSpeed;
-                this.time += this.oscillationSpeed;
-                this.x += Math.sin(this.time) * 0.5;
+                this.time += 0.02;
 
-                if (this.y > canvas.height + 20) {
-                    this.init();
-                }
+                if (this.y > canvas.height + 20 && !this.ySpeed) this.init();
             }
-
             draw() {
                 ctx.save();
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.rotation * Math.PI / 180);
                 ctx.fillStyle = this.color;
                 
-                if (this.size > 10) {
-                    // Рисуем маленькое сердечко
+                const isNight = document.body.classList.contains('night-mode');
+                
+                if (isNight && this.size < 9) {
+                    // Ночью рисуем звёздочки вместо квадратиков
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        ctx.lineTo(Math.cos((18+72*i)*Math.PI/180)*this.size, Math.sin((18+72*i)*Math.PI/180)*this.size);
+                        ctx.lineTo(Math.cos((54+72*i)*Math.PI/180)*(this.size/2), Math.sin((54+72*i)*Math.PI/180)*(this.size/2));
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (this.size > 11) {
+                    // Сердечки
                     ctx.beginPath();
                     ctx.moveTo(0, 0);
                     ctx.bezierCurveTo(-this.size/2, -this.size/2, -this.size, 0, 0, this.size);
                     ctx.bezierCurveTo(this.size, 0, this.size/2, -this.size/2, 0, 0);
                     ctx.fill();
                 } else {
-                    // Рисуем конфетти-квадратик
-                    ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                    ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
                 }
                 ctx.restore();
             }
         }
 
-        function initConfetti() {
-            for (let i = 0; i < numberOfPieces; i++) {
-                pieces.push(new Confetti());
-            }
-        }
-
+        for (let i = 0; i < 80; i++) { pieces.push(new Confetti()); pieces[i].y = Math.random()*canvas.height; }
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            pieces.forEach(p => {
+            pieces.forEach((p, idx) => {
                 p.update();
                 p.draw();
+                if(p.y > canvas.height + 20 && p.ySpeed !== p.speed) pieces.splice(idx, 1); // Удаляем кликнутые конфетти
             });
+            if(pieces.length < 75) pieces.push(new Confetti());
             requestAnimationFrame(animate);
         }
-
-        initConfetti();
         animate();
 
-
-        // --- ТАЙМЕР В РЕАЛЬНОМ ВРЕМЕНИ (ОТ 12.07.2026 15:00) ---
-        // Месяцы в JS нумеруются с 0, поэтому 6 — это Июль
+        // --- ТАЙМЕР ОТ 12.07.2026 15:00 ---
         const startDate = new Date(2026, 6, 12, 15, 0, 0).getTime();
-
         function updateTimer() {
             const now = new Date().getTime();
             const difference = now - startDate;
-
-            // Вычисление прошедших дней, часов, минут и секунд
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-            // Обновление DOM-элементов
-            document.getElementById('days').innerText = days >= 0 ? days : 0;
-            document.getElementById('hours').innerText = hours >= 0 ? hours : 0;
-            document.getElementById('minutes').innerText = minutes >= 0 ? minutes : 0;
-            document.getElementById('seconds').innerText = seconds >= 0 ? seconds : 0;
+            document.getElementById('days').innerText = Math.max(0, Math.floor(difference / (1000 * 60 * 60 * 24)));
+            document.getElementById('hours').innerText = Math.max(0, Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+            document.getElementById('minutes').innerText = Math.max(0, Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)));
+            document.getElementById('seconds').innerText = Math.max(0, Math.floor((difference % (1000 * 60)) / 1000));
         }
-
-        // Обновление каждую секунду
-        updateTimer();
-        setInterval(updateTimer, 1000);
+        updateTimer(); setInterval(updateTimer, 1000);
     </script>
 </body>
 </html>
